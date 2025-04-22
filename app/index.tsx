@@ -1,19 +1,16 @@
-// app/_layout.tsx
+// app/index.tsx
 "use client"
 
 import { useEffect, useState } from "react"
-import { Slot } from "expo-router"
-import { AppointmentProvider } from "../context/AppointmentContext"
+import { Redirect } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { View, Text } from "react-native"
-import { SafeAreaProvider } from "react-native-safe-area-context"
+import { View, Text, ActivityIndicator } from "react-native"
 
-export default function RootLayout() {
+export default function Index() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    // Kiểm tra xem người dùng đã đăng nhập chưa
     const checkAuth = async () => {
       try {
         const token = await AsyncStorage.getItem("accessToken")
@@ -29,21 +26,15 @@ export default function RootLayout() {
     checkAuth()
   }, [])
 
-  // Hiển thị màn hình loading khi đang kiểm tra xác thực
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="#4a6da7" />
+        <Text style={{ marginTop: 10 }}>Loading...</Text>
       </View>
     )
   }
 
-  // Sử dụng Slot để render các màn hình
-  return (
-    <SafeAreaProvider>
-      <AppointmentProvider>
-        <Slot />
-      </AppointmentProvider>
-    </SafeAreaProvider>
-  )
+  // Chuyển hướng dựa trên trạng thái đăng nhập
+  return isAuthenticated ? <Redirect href="/(tabs)" /> : <Redirect href="/(auth)" />
 }
