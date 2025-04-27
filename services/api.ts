@@ -121,7 +121,7 @@ const apiRequest = async <T>(
 export const authService = {
   login: async (email: string, password: string): Promise<{ token: string; user: User }> => {
     try {
-      const response = await apiRequest<LoginResponse>(API_URLS.AUTH, "/api/v1/auth/login", "POST", { email, password })
+      const response = await apiRequest<LoginResponse>(API_URLS.AUTH, "/api/v1/auth/login/staff", "POST", { email, password })
 
       if (!response.isSuccess || !response.value.accessToken) {
         throw {
